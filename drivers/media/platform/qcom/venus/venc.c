@@ -605,9 +605,9 @@ static int venc_enum_frameintervals(struct file *file, void *fh,
 		return -EINVAL;
 
 	fival->stepwise.min.numerator = FRAMERATE_FACTOR;
-	fival->stepwise.min.denominator = frate_max(inst);
+	fival->stepwise.min.denominator = frate_max(inst) * FRAMERATE_FACTOR;
 	fival->stepwise.max.numerator = FRAMERATE_FACTOR;
-	fival->stepwise.max.denominator = frate_min(inst);
+	fival->stepwise.max.denominator = frate_min(inst) * FRAMERATE_FACTOR;
 	fival->stepwise.step.numerator = 1;
 	fival->stepwise.step.denominator = 1;
 
@@ -669,8 +669,8 @@ static int venc_set_properties(struct venus_inst *inst)
 	ptype = HFI_PROPERTY_CONFIG_FRAME_RATE;
 	frate.buffer_type = HFI_BUFFER_OUTPUT;
 	frate.framerate = framerate;
-	if (frate.framerate > frate_max(inst))
-		frate.framerate = frate_max(inst);
+	if (frate.framerate > frate_max(inst) * FRAMERATE_FACTOR)
+		frate.framerate = frate_max(inst) * FRAMERATE_FACTOR;
 
 	ret = hfi_session_set_property(inst, ptype, &frate);
 	if (ret)
